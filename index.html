@@ -25,9 +25,6 @@
     <div class="panel panel-default">
       <form class="panel-body form-inline text-right">
 
-        <button class="btn btn-info btn-sm" 
-        ng-click="vm.toggleAdd()">Add new card</button>
-
         <label for="search">Search: </label>
         <input type="text" class="form-control input-sm" id="search" 
         ng-model="vm.search">
@@ -41,6 +38,9 @@
           <option value="name">Name</option>
           <option value="car">Car</option>
         </select>
+
+        <button class="btn btn-info btn-sm" 
+        ng-click="vm.toggleAdd()">Add new card</button>
       </form>
     </div>
 
