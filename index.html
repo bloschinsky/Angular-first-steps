@@ -15,14 +15,15 @@
 
 <body ng-controller="myCtrl as vm" class="container">
 
-  <div class="page-header">
-    <h1>Angular homework</h1>
-  </div>
 
+<app-head>
 
-  <div ng-if="!vm.detalization && !vm.addMenu">
+<!-- <p>{{vm.qEdit}}</p>
+<p>{{vm.current}}</p> -->
 
-    <div class="panel panel-default">
+<div ng-if="!vm.detalization && !vm.addMenu">
+
+  <div class="panel panel-default">
       <form class="panel-body form-inline text-right">
 
         <label for="search">Search: </label>
@@ -42,44 +43,31 @@
         <button class="btn btn-info btn-sm" 
         ng-click="vm.toggleAdd()">Add new card</button>
       </form>
-    </div>
+  </div>
 
-
-    <!-- <ol class="list-group">
-    <li class="list-group-item" ng-repeat="item in vm.database">
-      <p>Name: <span ng-if="!vm.qEdit || vm.current != item" ng-dblclick="vm.quickEdit(item)">{{item.name}}</span>
-      <input type="text" ng-if="vm.qEdit && vm.current == item" ng-model="vm.current.name" ng-keydown="$event.keyCode === 13 && vm.quickEdit(item)"></p>
-      <p>Reg. number: {{item.number}} </p>
-      <p>Car: {{item.car}}</p>
-      <button class="btn btn-default" ng-click="vm.openDetail(item)">Open</button>
-      <button class="btn btn-default" ng-click="vm.quickEdit(item)">{{ (!vm.qEdit || vm.current != item) ? "Quick edit" : "Finish edit"}}</button>
-    </li>
-</ol> -->
 
     <table class="table table-striped">
       <tr ng-repeat="item in vm.database | orderBy: vm.order | filter : vm.search">
+        
         <td>
           <h4 class="text-primary">{{$index+1}}</h4>
         </td>
+        
         <td>
-          <p>Name: <span 
-          ng-if="!vm.qEdit || vm.current != item" 
-          ng-dblclick="vm.quickEdit(item)">{{item.name}}</span>
+          
+          <user-smart-data user='item' q-edit-state='vm.qEdit'>
+             
+          </user-smart-data>
+          <smart-data-controls></smart-data-controls>
+         
 
-            <input type="text" 
-            ng-if="vm.qEdit && vm.current == item" 
-            ng-model="vm.current.name" 
-            ng-keydown="$event.keyCode === 13 && vm.quickEdit(item)">
-          </p>
-          
+          <!-- <p>Name: <editable-user-name></editable-user-name></p>          
           <p>Reg. number: {{item.number}} </p>
-          <p>Car: {{item.car}}</p>
-          <button class="btn btn-default" 
-          ng-click="vm.openDetail(item)">Open</button>
+          <p>Car: {{item.car}}</p> -->
+
           
-          <button class="btn btn-default" 
-          ng-click="vm.quickEdit(item)">{{ (!vm.qEdit || vm.current != item) ? "Quick edit" : "Finish edit"}}</button>
         </td>
+      
       </tr>
     </table>
 
@@ -174,6 +162,8 @@
     </div>
 
   </form>
+
+</app-head>
 
   <script src="script.js"></script>
 </body>

@@ -53,8 +53,8 @@ app.controller("myCtrl", function() {
     this.current = item;
   };
 
-  this.openDetail = function(item) {
-    this.current = item;
+  this.openDetail = function(user) {
+    this.current = user;
     this.toggleDetail();
   };
 
@@ -74,4 +74,69 @@ app.controller("myCtrl", function() {
 
 
 
+})
+
+.directive("appHead", function(){
+  return {
+    restrict: 'E',
+    transclude: true,
+    template: "<div class=\"page-header\"><h1>Angular homework</h1></div><div ng-transclude></div>"
+  }
+
+})
+
+.directive("userSmartData", function(){
+  return {
+    scope: {
+      user: "=",
+      qEditState: "="
+    },
+
+    restrict: 'E',
+    transclude: true,
+    template: ["<p>Name: <editable-user-name user-name=\"user.name\" quickedit=\"qEditState\"></editable-user-name></p>",          
+          "<p>Reg. number: {{user.number}} </p>",
+          "<p>Car: {{user.car}}</p>",
+          "</div><div ng-transclude></div>"].join("")
+  }
+})
+
+.directive("editableUserName", function(){
+  return {
+    /*controller: function(){
+      this.quickedit = false;
+    },
+
+    controllerAs: "nvm",
+
+    scope: {
+      userName: "="
+    },*/
+
+    restrict: 'E',
+    template: ["<span ",
+                      "ng-if=\"!qEditState || vm.current != item\"",
+                      " ng-dblclick=\"vm.quickEdit(item)\">",
+              "{{user.name}}",
+              "</span>",
+              "<input type=\"text\"", 
+                      "ng-if=\"qEditState && vm.current === item\"", 
+                      "ng-model=\"user.name\"", 
+                      "ng-keydown=\"$event.keyCode === 13 && vm.quickEdit(item)\">"].join("")
+  }
+})
+
+.directive("smartDataControls", function(){
+  return {
+    restrict: 'E',
+    transclude: true,
+    template: [
+          "<button class=\"btn btn-default\"", 
+          "ng-click=\"vm.openDetail(item)\">Open</button>",
+          
+          "<button class=\"btn btn-default\"", 
+          "ng-click=\"vm.quickEdit(item)\">",
+          "{{ (!vm.qEdit || vm.current != item) ? \"Quick edit\" : \"Finish edit\"}}",
+          "</button>"].join("")
+  }
 });
