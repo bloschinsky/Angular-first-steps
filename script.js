@@ -1,4 +1,24 @@
-var app = angular.module("baseApp", [])
+var app = angular.module("baseApp", ['ui.router'])
+
+.config(function($stateProvider, $urlRouterProvider){
+     $urlRouterProvider.otherwise('/');
+
+     $stateProvider
+        .state('main',{
+          url: '/',
+          component: "mainMenu"
+        })
+
+        .state('add',{
+          url: '/add',
+          component: "addUserMenu"
+        })
+
+        .state('detail',{
+          url: '/detalization',
+          component: "userDetalization"
+        })
+})
 
 .factory("appData", function(){
   
@@ -46,32 +66,18 @@ var app = angular.module("baseApp", [])
 
   
   var appState = {
-    detalization: false,
-    addMenu: false,
     current: null
   };
 
 
-
-  var toggleAdd = function() {
-            appState.addMenu = !appState.addMenu;
-          };
-
-  var toggleDetail = function() {
-            appState.detalization = !appState.detalization;
-          };
-
   var openDetail = function(user){
             appState.current = user;
-            toggleDetail();
           };
 
 
   return {
     data: database,
     appState: appState,
-    toggleAdd: toggleAdd,
-    toggleDetail: toggleDetail,
     openDetail: openDetail
   }
 
@@ -81,33 +87,15 @@ var app = angular.module("baseApp", [])
 .component("mainApp", {
     restrict: 'E',
     template: `<div class="page-header">
-               <h1>Angular homework step 3</h1>
+               <h1>Angular homework step 4</h1>
                </div>
-  
-               <main-menu 
-                    ng-if="!vm.appState.detalization && !vm.appState.addMenu"
-                    database="vm.database"
-                    
-                    toggle-detail="vm.toggleDetail()"
-                    open-detail="vm.openDetail()"></main-menu>
-               
-               <add-user-menu 
-                    ng-if="vm.appState.addMenu"></add-user-menu>
 
-               <user-detalization 
-                    ng-if="vm.appState.detalization" 
-                    toggle-detail="vm.toggleDetail()"></user-detalization>`,
+               <ui-view></ui-view>`,
 
     
     controllerAs: "vm",
     
-    controller: function(appData){
-      
-          this.database = appData.data;
-      
-          this.appState = appData.appState;
 
-    }
 
 })
 
@@ -124,18 +112,14 @@ var app = angular.module("baseApp", [])
 
   controllerAs: "vm",
 
-  controller: function(){
+  controller: function(appData){
+    this.database = appData.data;
     this.order = "";
     this.search = "";
+    console.log(Object.keys(this.database));
   },
 
 
-  bindings: {
-    database: "=",
-    
-    toggleDetail: "&",
-    openDetail: "&"
-  }
 })
 
 .component("navPanel",{
@@ -161,16 +145,11 @@ var app = angular.module("baseApp", [])
         </select>
 
         <button class="btn btn-info btn-sm" 
-        ng-click="vm.toggleAdd()">Add new card</button>
+                ui-sref="add">Add new card</button>
       </form>
   </div>
             `,
   controllerAs: "vm",
-  
-  controller: function(appData){
-      this.toggleAdd = function(){
-      appData.toggleAdd();}
-  },
   
   bindings: {
     order: "=",
@@ -273,7 +252,8 @@ var app = angular.module("baseApp", [])
     restrict: 'E',
     template: `
           <button class="btn btn-default" 
-          ng-click="vm.openDetail(vm.user)">Open</button>
+          ng-click="vm.openDetail(vm.user)"
+          ui-sref="detail">Open</button>
           
           <button class="btn btn-default"
           ng-click="vm.quickEdit()">
@@ -327,8 +307,11 @@ var app = angular.module("baseApp", [])
         <br>
 
         <div class="text-center">
-          <button class="btn btn-success" ng-click="vm.addToDB(); vm.toggleAdd()">Save</button>
-          <button class="btn btn-danger" ng-click="vm.toggleAdd()">Close</button>
+          <button class="btn btn-success" 
+                  ng-click="vm.addToDB()" 
+                  ui-sref="main">Save</button>
+          <button class="btn btn-danger" 
+                  ui-sref="main">Close</button>
         </div>
       </div>
 
@@ -344,9 +327,6 @@ var app = angular.module("baseApp", [])
 
     this.database = appData.data;
     
-    this.toggleAdd = function(){
-      appData.toggleAdd();}
-
     this.addToDB = function() {
             var tmp = Object.assign({}, this.newData);
             this.database.push(tmp);
@@ -403,7 +383,7 @@ var app = angular.module("baseApp", [])
       </table>
 
       <div class="text-center">
-        <button class="btn btn-danger" ng-click="vm.toggleDetail()">Close</button>
+        <button class="btn btn-danger" ui-sref="main">Close</button>
       </div>
 
     </div>
@@ -413,11 +393,7 @@ var app = angular.module("baseApp", [])
   controllerAs: "vm",
   
   controller: function(appData){
-    this.toggleDetail = function(){
-      appData.toggleDetail();
-    };
     this.appState = appData.appState;
-
   },
   
 
